@@ -7,7 +7,7 @@ if(process.argv.includes('--web'))throw Error('This source distribution provides
 const buildConfig={
   appId:'com.calipo.arma3bettertools',productName:pkg.productName,asar:true,
   directories:{output:'release/installer-'+pkg.version,buildResources:'desktop/branding'},
-  files:['dist/**/*','desktop/**/*','package.json','!**/*.test.*','!desktop/builtin-materials/**/*'],
+  files:['dist/**/*','desktop/**/*','package.json','LICENSE.txt','THIRD_PARTY_NOTICES.md','!**/*.test.*','!desktop/builtin-materials/**/*'],
   electronDist:'node_modules/electron/dist',npmRebuild:false,
   // Preserve executable identity so existing update installations replace in place.
   executableName:'Arma 3 Better Tools by Calipo',

@@ -2,6 +2,12 @@
 
 Editor de modelos y exportador de addons para Arma 3, con interfaz en español e inglés.
 
+## Descargar para Windows
+
+[Descargar instalador completo para Windows x64](https://github.com/calipotontico/arma-3-better-tools/releases/download/v0.3.14-public/Arma3BetterTools-Setup-0.3.14.exe)
+
+Versión pública de prueba. No necesitas Node.js ni compilar el código para instalarla. Consulta las [notas y archivos de la versión](https://github.com/calipotontico/arma-3-better-tools/releases/tag/v0.3.14-public). El instalador no está firmado digitalmente: Windows puede mostrar «Editor desconocido» o un aviso de SmartScreen. Esta edición no tiene actualizaciones automáticas; las nuevas versiones se descargarán desde GitHub.
+
 ## Preparar y ejecutar
 
 Requisitos: Windows x64, Node.js 22 LTS y npm. Para generar PBO se necesita una instalación local de Arma 3 Tools, cuya carpeta se selecciona en los ajustes. Arma 3 y sus herramientas no están incluidos.
