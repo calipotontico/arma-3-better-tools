@@ -1,0 +1,60 @@
+ARMA 3 BETTER TOOLS — LICENCIA DE USO Y DISTRIBUCIÓN GRATUITA
+Versión 1.0, 22 de octubre de 2026
+Copyright (c) 2026 Calipo y los respectivos titulares de las contribuciones.
+
+1. Alcance
+Esta licencia se aplica al código propio de Arma 3 Better Tools, su
+documentación y sus versiones modificadas (el «Software»). Los componentes
+y recursos de terceros conservan sus propias licencias; esta licencia no
+restringe los derechos que esas licencias concedan de forma independiente.
+
+2. Permisos
+Se permite gratuitamente ejecutar, estudiar, copiar y modificar el Software,
+así como distribuir su código fuente y sus ejecutables originales o
+modificados, siempre que se cumplan las siguientes condiciones.
+
+3. Prohibición de cobro
+No se permite vender el Software ni cobrar por su descarga, entrega,
+licencia, acceso o uso. Esta prohibición incluye las versiones modificadas,
+los parches, las suscripciones, las funciones de pago y los paquetes de
+pago que incluyan el Software como parte de lo adquirido.
+Tampoco se permite cobrar por desarrollar o entregar modificaciones del
+Software, aunque el resultado se distribuya posteriormente gratis.
+No se permite eludir estas condiciones cambiando el nombre del Software
+o imponiendo una donación, membresía u otro pago obligatorio.
+Se permiten donaciones genuinamente voluntarias que no condicionen el
+acceso, las funciones, las actualizaciones ni la entrega de modificaciones.
+
+4. Redistribución y atribución
+Cada copia distribuida debe incluir esta licencia y conservar los avisos
+de autoría y las licencias de terceros. Las versiones modificadas deben
+identificarse como tales y describir los cambios principales. El código
+derivado del Software continúa sujeto a estas condiciones; no puede
+relicenciarse para permitir su venta o el cobro por modificaciones.
+No se concede permiso para presentar una versión modificada como una
+versión oficial ni para sugerir el respaldo de Calipo sin autorización.
+
+5. Modelos, addons y archivos generados
+Esta licencia no se extiende por el mero uso del editor a los modelos,
+texturas, proyectos, addons o PBO creados por sus usuarios. Sus titulares
+pueden distribuirlos, incluso comercialmente, respetando las licencias
+de los recursos que incorporen y las condiciones aplicables de Arma 3.
+Como excepción expresa a las secciones 3 y 4, se permite incluir, adaptar
+y distribuir los fragmentos de scripts y configuraciones que el exportador
+genere para esos addons, también en addons comerciales. Esta excepción
+no permite redistribuir el propio editor o sus modificaciones de pago.
+
+6. Ausencia de garantía
+El Software se proporciona «tal cual», sin garantías de funcionamiento,
+idoneidad o ausencia de errores. En la medida permitida por la legislación
+aplicable, sus titulares no responden de daños derivados de su uso.
+Esta cláusula no excluye derechos ni responsabilidades que legalmente
+no puedan excluirse.
+
+7. Incumplimiento y otros permisos
+Los permisos concedidos cesan si se incumplen estas condiciones. Los
+derechos no concedidos expresamente quedan reservados. Cualquier permiso
+adicional requiere autorización expresa del titular de los derechos.
+
+Esta es una licencia propia de código visible con restricciones económicas;
+no es una licencia de código abierto aprobada por la Open Source Initiative.

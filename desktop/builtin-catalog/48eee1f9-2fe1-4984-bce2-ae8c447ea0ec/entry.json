@@ -1,0 +1,18 @@
+{
+  "id": "48eee1f9-2fe1-4984-bce2-ae8c447ea0ec",
+  "name": "Ladrillo rojo",
+  "texture": "a1da802678c6188a4a29_color.paa",
+  "rvmat": "18dbbe32354c8972c0b9.rvmat",
+  "files": [
+    "a1da802678c6188a4a29_color.paa",
+    "18dbbe32354c8972c0b9.rvmat"
+  ],
+  "builtin": true,
+  "names": {
+    "es": "Ladrillo rojo",
+    "en": "Red brick"
+  },
+  "source": "https://ambientcg.com/a/Bricks001",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://docs.ambientcg.com/license/"
+}

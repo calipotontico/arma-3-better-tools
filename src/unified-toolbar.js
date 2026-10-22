@@ -1,0 +1,13 @@
+import {t,onLanguage} from './i18n.js';
+export function installUnifiedToolbar({editor,subEditor,layerEditor,volumeCut}){
+  const bar=document.getElementById('editToolbar'),select=document.getElementById('componentMode');
+  const paths={objects:'<path d="m12 2 9 5v10l-9 5-9-5V7zM3 7l9 5 9-5M12 12v10"/>',faces:'<path d="m12 2 9 5v10l-9 5-9-5V7zM3 7l9 5 9-5M12 12v10"/><path d="m12 12 9-5v10l-9 5z" fill="currentColor" fill-opacity=".55"/>',points:'<path d="M5 5h14v14H5z" opacity=".4"/><circle cx="5" cy="5" r="2.5"/><circle cx="19" cy="5" r="2.5"/><circle cx="5" cy="19" r="2.5"/><circle cx="19" cy="19" r="2.5"/>'};
+  const labels={objects:'Objetos',faces:'Caras',points:'Puntos',select:'Seleccionar',translate:'Mover',rotate:'Girar',scale:'Escalar'};
+  const group=document.createElement('div');group.className='component-toolbar';group.setAttribute('role','group');
+  for(const mode of ['objects','faces','points']){const b=document.createElement('button');b.type='button';b.dataset.component=mode;b.innerHTML=`<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">${paths[mode]}</svg>`;b.onclick=()=>{if(volumeCut?.setComponent(mode)){sync();return;}if(!layerEditor.active())document.getElementById('tab-objects').click();select.value=mode;select.dispatchEvent(new Event('change'));sync();};group.append(b);}
+  bar.prepend(group);
+  select.hidden=true;document.querySelector('label[for="componentMode"]').hidden=true;
+  for(const b of bar.querySelectorAll('[data-mode]')){b.textContent='';b.onclick=()=>{const mode=b.dataset.mode;if(volumeCut?.setMode(mode)){}else if(layerEditor.active()){if(mode==='select')layerEditor.stopGizmo();else if(mode==='translate')layerEditor.rebuild();}else if(subEditor.active())subEditor.setTransformMode(mode);else editor.setMode(mode);for(const button of bar.querySelectorAll('[data-mode]'))button.classList.toggle('active',button===b);};}
+  function sync(){for(const b of bar.querySelectorAll('button')){const mode=b.dataset.component||b.dataset.mode;b.title=t(labels[mode]);b.setAttribute('aria-label',b.title);if(b.dataset.component){b.classList.toggle('active',(volumeCut?.active()?volumeCut.component():select.value)===mode);b.setAttribute('aria-pressed',String((volumeCut?.active()?volumeCut.component():select.value)===mode));}else b.disabled=volumeCut?.active()?mode==='rotate'||(mode==='scale'&&volumeCut.component()==='faces'):layerEditor.active()&&['rotate','scale'].includes(mode);}}
+  new MutationObserver(sync).observe(document.body,{attributes:true,attributeFilter:['class']});select.addEventListener('change',sync);document.getElementById('layerMode').addEventListener('change',sync);onLanguage(sync);sync();
+}

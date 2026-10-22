@@ -1,0 +1,18 @@
+{
+  "id": "5f62513a-a62c-4467-9a6f-9b774f9f9c73",
+  "name": "Suelo de madera",
+  "texture": "73854940b661e507008d_color.paa",
+  "rvmat": "47da4c31191b69725c1e.rvmat",
+  "files": [
+    "73854940b661e507008d_color.paa",
+    "47da4c31191b69725c1e.rvmat"
+  ],
+  "builtin": true,
+  "names": {
+    "es": "Suelo de madera",
+    "en": "Wood floor"
+  },
+  "source": "https://ambientcg.com/a/WoodFloor051",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://docs.ambientcg.com/license/"
+}

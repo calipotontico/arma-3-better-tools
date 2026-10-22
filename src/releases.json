@@ -1,0 +1,278 @@
+[
+  {
+    "version": "0.3.14",
+    "date": "2026-10-21",
+    "es": [
+      "Interiores: opciones separadas para crear habitaciones y preparar modelos que ya tienen interior.",
+      "Análisis de estructura con lista revisable de piezas; reconoce paredes interiores, suelo y techo por nombre cuando están disponibles. Las capas manuales se conservan.",
+      "Colisiones por superficies convexas para estructuras existentes, respetando habitaciones y huecos. Los modelos demasiado complejos requieren simplificación.",
+      "Roadway calculado a partir de la orientación real de los triángulos, conservando huecos de escaleras y excluyendo puertas y cristales.",
+      "Las cajas automáticas ignoran vértices que no forman parte de las caras activas.",
+      "Proyecto 29a3f972: copia de prueba con 357 componentes y 32 puntos de suelo libres en la comprobación geométrica. Pendiente de validación dentro de Arma 3."
+    ],
+    "en": [
+      "Interiors: separate workflows to create rooms or prepare models with an existing interior.",
+      "Structural analysis with a reviewable parts list; recognizes named interior walls, floors and ceilings when available. Manual layers are preserved.",
+      "Convex surface collision for existing structures, preserving rooms and openings. Overly complex models require simplification.",
+      "Roadway uses actual triangle orientation, preserving stair openings and excluding doors and glass.",
+      "Automatic bounds ignore vertices outside active faces.",
+      "Project 29a3f972: test copy with 357 components and 32 clear floor samples in geometry checks. In-game Arma 3 validation pending."
+    ]
+  },
+  {
+    "version": "0.3.13",
+    "date": "2026-10-21",
+    "es": [
+      "Carpetas configurables de proyectos y exportaciones; guardado directo, Guardar como y galería con miniaturas.",
+      "Botón Probar en Arma 3 después de exportar y selección del ejecutable en Ajustes. Inicio del juego pendiente de prueba manual.",
+      "Aviso de nueva versión al iniciar, con novedades, Actualizar y Más tarde.",
+      "Colocación de muebles: apoyar en superficies, cuadrícula, giros por pasos y filas de proxies.",
+      "Crear puerta con grosor desde una selección rectangular de caras planas verticales. Requiere revisar el hueco y las colisiones.",
+      "Figuras orientativas para ajustar asientos y trayectoria de escaleras; no se exportan.",
+      "Sentarse comprueba orientación y obstáculos en cliente y servidor. Pendiente de prueba en Arma, especialmente muebles proxy y multijugador.",
+      "Focos direccionales con cono virtual de alcance, apertura y orientación; exportación como lightreflector. Funcionamiento del foco confirmado por el usuario en Arma; las paredes no recortan el cono.",
+      "Asientos: mover y girar directamente el muñeco sentado actualiza la posición y orientación con deshacer. Flecha de dirección visible.",
+      "El punto Memory de salida acompaña automáticamente al muñeco al moverlo y girarlo, conservando la distancia y altura relativas.",
+      "Asientos creados en el lateral con selección, localizar y renombrar; lista sincronizada con el inspector. Aplicar ajustes termina el movimiento y giro del muñeco y los puntos Memory.",
+      "Primera fase de Interiores: habitación de una planta con medidas, entrada, suelo transitable, paredes con grosor, techo opcional y vista previa. Guardado y deshacer. No recorta aún edificios existentes; prueba en Arma pendiente.",
+      "Las puertas creadas desde caras mantienen unidos los cantos al mover caras, conservando las UV.",
+      "Interiores: volumen de corte local para vaciar colisiones o recortar fachada y colisiones. Vista previa, UV conservadas y deshacer. No genera cantos y rechaza cajas oblicuas. Pendiente de prueba en Arma.",
+      "El volumen de recorte interior se ajusta con Mover y Escalar en el visor, sincronizando medidas y comprobando el recorte al soltar.",
+      "Mover la cámara con Alt conserva la herramienta. Seleccionar Caras en un LOD mantiene la capa y permite ajustar las caras de sus cajas de colisión sin cambiar el modelo visible.",
+      "Interiores: seleccionar una cara del volumen y arrastrarla ajusta solo ese lado, con resaltado y medidas sincronizadas.",
+      "Interiores simplificados: Vaciar interior y Abrir hueco de puerta. Haz clic en una pared para colocar un volumen de puerta ajustable; medidas en Ajustes avanzados y aviso si no toca caras.",
+      "Corregido el hueco bloqueado por colisiones de piezas superpuestas: vaciar interior y abrir entrada actualizan Colisión, Disparos y Visión de las piezas fijas afectadas, conservando puertas y elementos interactivos.",
+      "Preparar hueco desde una puerta existente: volumen con margen y Roadway independiente del umbral, conservando el suelo previo. Revisión en Arma pendiente.",
+      "Garajes desde caras o puertas existentes: panel ascendente o corredera lateral, recorrido calculado y exportación con colisión animada. Pendiente de prueba en Arma.",
+      "Ventanas: clic en pared, volumen ajustable, corte de exterior e interior, cantos separados y cristal opcional; sin Roadway.",
+      "Crear interior desde el volumen: suelo con Roadway, cuatro paredes y techo separados con materiales independientes y UV a escala.",
+      "Conectar hueco de puerta con la pared interior más próxima y el suelo del paso. Paso de puerta confirmado en Arma; garajes y ventanas pendientes."
+    ],
+    "en": [
+      "Configurable project and export folders; direct saving, Save as and a thumbnail gallery.",
+      "Test in Arma 3 button after export and executable selection in Settings. Game launch requires manual validation.",
+      "Startup update notice with release notes, Update and Later.",
+      "Furniture placement: ground on surfaces, grid alignment, stepped rotation and proxy rows.",
+      "Create a thick door from a rectangular selection of vertical planar faces. Review the opening and collisions.",
+      "Approximate character previews for seats and ladder paths; excluded from exports.",
+      "Sitting checks facing and obstacles on client and server. In-game testing pending, especially proxies and multiplayer.",
+      "Directional spotlights with virtual range cone, opening and orientation; exported as lightreflector. Spotlight operation confirmed by the user in Arma; walls do not clip the cone.",
+      "Seats: move and rotate the seated figure directly to update position and heading with undo. Visible facing arrow.",
+      "The exit Memory point automatically follows the figure when moved or rotated, preserving relative distance and height.",
+      "Created seats in the sidebar with selection, locate and rename; list synchronized with the inspector. Apply settings ends figure and Memory point adjustment.",
+      "First Interiors stage: single-storey room with dimensions, entrance, walkable floor, thick walls, optional ceiling and preview. Saving and undo. Existing buildings are not cut yet; in-game testing pending.",
+      "Doors created from faces keep side corners linked when moving faces, preserving UV seams.",
+      "Interiors: local cutting volume to clear collision or cut facade and collision. Preview, preserved UVs and undo. No reveal generation; oblique boxes rejected. In-game testing pending.",
+      "Adjust the interior cut volume with Move and Scale in the viewport, synchronizing dimensions and checking the cut after dragging.",
+      "Alt camera navigation preserves the active tool. Face selection keeps the current LOD and allows adjusting collision box faces without changing the visible model.",
+      "Interiors: select and drag a volume face to adjust one side, with highlighting and synchronized dimensions.",
+      "Simplified interiors: Clear interior and Open doorway. Click a wall to place an adjustable doorway volume; dimensions in Advanced settings and a warning if no faces are affected.",
+      "Fixed doorways blocked by overlapping collision parts: interior and doorway cuts update Geometry, Fire and View collision layers of affected static parts while preserving doors and interactive elements.",
+      "Prepare an opening from an existing door: clearance volume and independent threshold Roadway, preserving the previous floor. In-game validation pending.",
+      "Garage doors from faces or existing doors: vertical lift or sideways panel, calculated travel and animated collision export. In-game validation pending.",
+      "Windows: click a wall, adjust the volume, cut exterior and interior, add separate reveals and optional glass; no Roadway.",
+      "Create interior from the volume: Roadway floor, four walls and ceiling as separate objects with independent materials and metre-scaled UVs.",
+      "Connect the doorway to the nearest interior wall and threshold walkway. Door passage confirmed in Arma; garages and windows pending."
+    ]
+  },
+  {
+    "version": "0.3.12",
+    "date": "2026-10-20",
+    "es": [
+      "Pestaña Asientos con ajustes desplegables de posición, orientación e interacción; ESPACIO para levantarse, aviso superior y textos ES/EN mediante stringtable.xml. Cámara y salida confirmadas en Arma; multijugador pendiente.",
+      "Biblioteca 3D de Poly Haven: búsqueda, miniaturas, polígonos, resolución y tamaño de descarga. Modelos CC0 con caché local, texturas guardadas en el proyecto y deshacer.",
+      "Escaleras en una pestaña propia del inspector.",
+      "Contador de objetos, caras trianguladas y vértices del modelo y la selección en el visor.",
+      "Eliminar objetos seleccionados con confirmación, limpieza de vínculos y recuperación mediante deshacer.",
+      "Duplicar muebles como proxies: modelo visual compartido, transformaciones y asientos independientes. Colisiones y sombras se conservan en el edificio. Pendiente de validación visual en Arma.",
+      "Scripts exportados con cabecera de Arma 3 Better Tools y enlace al Discord."
+    ],
+    "en": [
+      "Seats tab with collapsible position, heading and interaction settings; SPACE to stand up, upper-screen hint and ES/EN stringtable.xml labels. Camera and exit confirmed in Arma; multiplayer testing pending.",
+      "Poly Haven 3D library: search, thumbnails, polygon counts, resolution and download size. CC0 models with local cache, embedded project textures and undo.",
+      "Dedicated Ladders inspector tab.",
+      "Viewport object, triangulated face and vertex counts for the model and selection.",
+      "Delete selected objects with confirmation, reference cleanup and undo.",
+      "Duplicate furniture as proxies: shared visual model with independent transforms and seats. Collision and shadow geometry stays in the building. In-game visual verification pending.",
+      "Exported scripts include an Arma 3 Better Tools header and Discord link."
+    ]
+  },
+  {
+    "version": "0.3.11",
+    "date": "2026-10-20",
+    "es": [
+      "Escaleras de mano con puntos Memory editables, guía de trayectoria, alineación vertical, distancia de interacción, guardado y deshacer.",
+      "Revisión estructural antes de exportar: errores y avisos por pieza.",
+      "Copiar ajustes de movimiento de puertas, iluminación y cristales sin cambiar nombres, posiciones, permisos o interruptores.",
+      "Cristal limpio y transparente por defecto al exportar, con reflejos suaves, daño y visibilidad por ambos lados."
+    ],
+    "en": [
+      "Ladders with editable Memory points, path guide, vertical alignment, interaction distance, saving and undo.",
+      "Structural review before exporting: errors and warnings per part.",
+      "Copy door movement, lighting and glass settings while preserving names, positions, permissions and switches.",
+      "Clean transparent glass on export, with subtle reflections, damage and visibility from both sides."
+    ]
+  },
+  {
+    "version": "0.3.10",
+    "date": "2026-10-20",
+    "es": [
+      "Interacción 3D de mantener pulsado en puertas y luces, con indicador nativo de progreso y tecla, vinculada al punto Memory (Arma 3 2.22 o superior).",
+      "Puertas correderas con desplazamiento X/Y/Z, vista previa, guardado y deshacer.",
+      "Un interruptor puede abrir y cerrar varias puertas juntas, compartiendo punto Memory, textos y permisos por bando.",
+      "Corregida la condición de las acciones de mantener pulsado que provocaba el error Falta punto y coma."
+    ],
+    "en": [
+      "Hold-to-interact 3D actions for doors and lights, with native progress and key hints anchored to Memory points (Arma 3 2.22 or later).",
+      "Sliding doors with X/Y/Z travel, preview, saving and undo.",
+      "One switch can open and close multiple doors together, sharing a Memory point, labels and side permissions.",
+      "Fixed the hold-action condition that caused a Missing semicolon error."
+    ]
+  },
+  {
+    "version": "0.3.9",
+    "date": "2026-10-20",
+    "es": [
+      "Corregido el error Archivo de addon inválido al exportar puertas o luces con interacción mediante marcador 3D.",
+      "Los errores de validación del exportador identifican ahora el archivo rechazado."
+    ],
+    "en": [
+      "Fixed the Invalid addon file error when exporting doors or lights with 3D marker interaction.",
+      "Exporter validation errors now identify the rejected file."
+    ]
+  },
+  {
+    "version": "0.3.8",
+    "date": "2026-10-20",
+    "es": [
+      "Ajuste rápido de texturas por metros para igualar su tamaño entre paredes y suelos.",
+      "Botones Más grande, Más pequeña y Girar 90° en Texturas, con deshacer y guardado de las UV.",
+      "Corregido el arranque que dejaba la aplicación sin ventana al copiar la biblioteca incluida desde el instalador."
+    ],
+    "en": [
+      "Quick texture sizing in metres for consistent repeats across walls and floors.",
+      "Larger, Smaller and Rotate 90° buttons in Textures, with undo and saved UV coordinates.",
+      "Fixed startup leaving the app without a window while copying the bundled material library from the installer."
+    ]
+  },
+  {
+    "version": "0.3.7",
+    "date": "2026-10-20",
+    "es": [
+      "Nombres incrementales para puertas, luces y cristales; textos iniciales de acción en el idioma elegido.",
+      "Botones de creación destacados y ajustes agrupados en desplegables.",
+      "Biblioteca incluida con ladrillo, hormigón, madera, baldosas y metal CC0 de ambientCG, textura PAA y RVMAT.",
+      "Interacción por rueda o marcador 3D, punto Memory editable y permisos por bandos para puertas e interruptores.",
+      "Tutorial móvil, minimizable y ampliable con siete prácticas verificadas de cámara y selección.",
+      "Actualizador sin repetir idioma, con textos de actualización y acceso directo con el logo del proyecto.",
+      "Al cerrar desde una ventana minimizada se restaura la app para mostrar el aviso de guardado."
+    ],
+    "en": [
+      "Incremental door, light and glass names; initial action labels use the selected language.",
+      "Highlighted create buttons and collapsible settings.",
+      "Bundled ambientCG CC0 brick, concrete, wood, tile and metal library with PAA textures and RVMAT.",
+      "Action menu or 3D marker interaction, editable Memory points and side permissions for doors and switches.",
+      "Movable, minimizable and expandable tutorial with seven verified camera and selection exercises.",
+      "Updates reuse the installer language, show update-specific text and use the project shortcut icon.",
+      "Closing a minimized window restores the app before showing the unsaved-changes prompt."
+    ]
+  },
+  {
+    "version": "0.3.6",
+    "date": "2026-10-20",
+    "es": [
+      "Inspector más compacto, con secciones desplegables para puertas y cristales."
+    ],
+    "en": [
+      "More compact inspector with collapsible door and glass settings."
+    ]
+  },
+  {
+    "version": "0.3.5",
+    "date": "2026-10-20",
+    "es": [
+      "Corregida la entrega de los últimos cambios a instalaciones de la 0.3.4.",
+      "Inicio sin eslóganes y botón Tutorial siempre visible en la barra superior.",
+      "Incluye el tutorial guiado, selección por tramos y barra de componentes."
+    ],
+    "en": [
+      "Corrected delivery of the latest changes to 0.3.4 installations.",
+      "Slogan-free start screen and a Tutorial button always visible in the top bar.",
+      "Includes the guided tutorial, range selection and component toolbar."
+    ]
+  },
+  {
+    "version": "0.3.4",
+    "date": "2026-10-20",
+    "es": [
+      "Nueva identidad gráfica en la aplicación y el instalador.",
+      "Interfaz más legible y ayudas plegables.",
+      "Grupos de escena y visibilidad por pieza con deshacer; ocultar en el visor no elimina piezas del addon.",
+      "Selección de tramos con Mayús y barra fija de objetos, caras y puntos con transformaciones.",
+      "Tutorial guiado del modelo de práctica a la exportación PBO, en español e inglés."
+    ],
+    "en": [
+      "New application and installer branding.",
+      "More readable interface with collapsible help.",
+      "Scene groups and per-part visibility with undo; viewport hiding does not remove addon parts.",
+      "Shift range selection and persistent object, face and vertex toolbar with transforms.",
+      "Guided tutorial from the practice model to PBO export, in Spanish and English."
+    ]
+  },
+  {
+    "version": "0.3.3",
+    "date": "2026-10-20",
+    "es": [
+      "Interfaz renovada con paneles grafito, acciones naranjas y barra de proyecto organizada.",
+      "Búsqueda de piezas, paneles laterales redimensionables e inspector organizado por herramientas.",
+      "Conserva las herramientas de edición, los proyectos existentes y el idioma seleccionado."
+    ],
+    "en": [
+      "Redesigned interface with graphite panels, orange actions and an organized project toolbar.",
+      "Part search, resizable side panels and an inspector organized by tools.",
+      "Preserves editing tools, existing projects and the selected language."
+    ]
+  },
+  {
+    "version": "0.3.2",
+    "date": "2026-10-20",
+    "es": [
+      "Versión de comprobación del proceso de actualización desde la 0.3.1: descarga, instalación y reinicio.",
+      "Esta versión conserva las funciones del editor de la 0.3.1; no añade herramientas nuevas."
+    ],
+    "en": [
+      "Release for testing the update process from 0.3.1: download, installation and restart.",
+      "This release keeps the editor features from 0.3.1; no new tools are added."
+    ]
+  },
+  {
+    "version": "0.3.1",
+    "date": "2026-10-19",
+    "es": [
+      "Activadas las comprobaciones de actualización al iniciar la app mediante el servidor HTTPS del proyecto.",
+      "Descarga de nuevas versiones desde Ajustes y novedades, con confirmación de guardado antes de reiniciar."
+    ],
+    "en": [
+      "Enabled update checks on app startup through the project's HTTPS server.",
+      "Download new versions from Settings and release notes, with an unsaved-changes check before restarting."
+    ]
+  },
+  {
+    "version": "0.3.0",
+    "date": "2026-10-19",
+    "es": [
+      "Instalador de Windows y sistema de actualizaciones con historial de novedades.",
+      "Selector de idioma español e inglés.",
+      "Biblioteca de texturas y materiales compartida entre proyectos.",
+      "Editor UV independiente con selección y arrastre de vértices, zoom con rueda y desplazamiento con botón central.",
+      "Guardado con Ctrl + S y aviso de cambios sin guardar al cerrar."
+    ],
+    "en": [
+      "Windows installer and update system with release history.",
+      "Spanish and English language selector.",
+      "Shared texture and material library across projects.",
+      "Detachable UV editor with vertex selection and dragging, mouse-wheel zoom and middle-button panning.",
+      "Ctrl + S saving and unsaved-changes confirmation when closing."
+    ]
+  }
+]

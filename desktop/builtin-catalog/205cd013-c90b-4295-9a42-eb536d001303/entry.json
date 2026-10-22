@@ -1,0 +1,18 @@
+{
+  "id": "205cd013-c90b-4295-9a42-eb536d001303",
+  "name": "Hormigón",
+  "texture": "d7eb936dada33390506e_color.paa",
+  "rvmat": "40ba949b3c513921a0ee.rvmat",
+  "files": [
+    "d7eb936dada33390506e_color.paa",
+    "40ba949b3c513921a0ee.rvmat"
+  ],
+  "builtin": true,
+  "names": {
+    "es": "Hormigón",
+    "en": "Concrete"
+  },
+  "source": "https://ambientcg.com/a/Concrete001",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://docs.ambientcg.com/license/"
+}

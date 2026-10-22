@@ -1,0 +1,18 @@
+{
+  "id": "9a69cf87-cb75-476a-b47d-278a5bb2155e",
+  "name": "Metal",
+  "texture": "14c65ff2b9c7b93edd31_color.paa",
+  "rvmat": "7d59b0485c1feb03abbd.rvmat",
+  "files": [
+    "14c65ff2b9c7b93edd31_color.paa",
+    "7d59b0485c1feb03abbd.rvmat"
+  ],
+  "builtin": true,
+  "names": {
+    "es": "Metal",
+    "en": "Metal"
+  },
+  "source": "https://ambientcg.com/a/Metal012",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://docs.ambientcg.com/license/"
+}

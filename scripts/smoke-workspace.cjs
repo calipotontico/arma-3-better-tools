@@ -1,0 +1,82 @@
+const {app,BrowserWindow}=require('electron'),path=require('node:path'),fs=require('node:fs');
+const base=path.join(__dirname,'..','build-checks','workspace-smoke-'+Date.now());
+fs.mkdirSync(base,{recursive:true});
+fs.writeFileSync(path.join(base,'desktop-settings.json'),JSON.stringify({language:'es',workspace:{projects:path.join(base,'projects'),exports:path.join(base,'exports'),arma:''}}));
+app.setPath('userData',base);
+app.on('browser-window-created',(_,win)=>win.hide());
+require('../desktop/main.cjs');
+const delay=ms=>new Promise(r=>setTimeout(r,ms));
+setTimeout(()=>app.exit(1),45000).unref();
+app.whenReady().then(async()=>{
+  try{
+    let win;for(let i=0;i<100;i++){win=BrowserWindow.getAllWindows()[0];if(win&&!win.webContents.isLoading())break;await delay(100);}
+    win.showInactive();await delay(1500);const run=s=>win.webContents.executeJavaScript(s,true);
+    await run(`document.querySelectorAll('dialog[open]').forEach(d=>d.close());document.getElementById('demo').click();`);
+    await delay(500);await run(`document.getElementById('tutorialExit').click();document.getElementById('save').click();`);
+    await delay(800);
+    let projects=await run(`window.desktop.workspace.list()`);if(projects.length!==1||!projects[0].preview)throw Error('Save or preview failed: '+await run(`document.getElementById('status').textContent`));
+    await run(`document.getElementById('save').click()`);await delay(400);
+    if((await run(`window.desktop.workspace.list()`)).length!==1)throw Error('Repeated save duplicated project');
+    await run(`document.getElementById('loadProject').click()`);await delay(300);
+    if(!await run(`document.getElementById('projectLibrary').open && document.querySelectorAll('.project-library-card').length===1`))throw Error('Project gallery failed');
+    await run(`document.querySelector('.project-library-card').click()`);await delay(500);
+    if(await run(`document.getElementById('projectLibrary').open`))throw Error('Project open failed');
+    await run(`document.getElementById('save').click()`);await delay(300);
+    if((await run(`window.desktop.workspace.list()`)).length!==1)throw Error('Open lost save destination');
+    win.webContents.send('updates:state',{status:'available',version:'99.0.0',notes:'Novedades de prueba',percent:0});await delay(100);
+    if(!await run(`document.getElementById('updateNotice').open && document.getElementById('updateNotice').textContent.includes('Novedades de prueba')`))throw Error('Update notice failed');
+    await run(`document.getElementById('updateLater').click()`);
+    if(!await run(`document.getElementById('appSettings').textContent==='Actualización disponible'`))throw Error('Postponed update button failed');
+    win.webContents.send('updates:state',{status:'available',version:'99.0.0',notes:'Novedades de prueba',percent:0});await delay(100);
+    if(await run(`document.getElementById('updateNotice').open`))throw Error('Notice reopened after Later');
+    const preview=await run(`(()=>{document.getElementById('tab-seats').click();return {seat:!!document.getElementById('seatPreview'),ladder:!!document.getElementById('ladderPreviewProgress')};})()`);
+    if(!preview.seat||!preview.ladder)throw Error('Interaction preview controls missing');
+    await run(`document.querySelector('#tree .piece-label').click();document.getElementById('seatCreate').click();`);
+    await delay(200);
+    if(!await run(`document.getElementById('seatList').options.length===1`))throw Error('Seat preview fixture failed');
+    await run(`document.getElementById('seatFigure-translate').click();document.getElementById('seatFigure-rotate').click();`);
+    if(!await run(`document.getElementById('status').textContent.includes('aro verde')`))throw Error('Seat figure controls failed');
+    await run(`document.getElementById('seatApply').click()`);
+    if(!await run(`document.getElementById('status').textContent==='Ajustes del asiento aplicados.'`))throw Error('Seat apply failed');
+    await delay(250);
+    if(!await run(`document.querySelectorAll('#doorList [data-entry-type="seats"]').length===1`))throw Error('Seat sidebar missing: '+await run(`JSON.stringify({tab:document.querySelector('[role=tab][aria-selected=true]')?.id,list:document.getElementById('doorList').innerHTML,status:document.getElementById('status').textContent})`));
+    await run(`document.querySelectorAll('#tree .piece-label')[1].click();document.getElementById('seatCreate').click()`);
+    await delay(250);
+    if(!await run(`document.querySelectorAll('#doorList [data-entry-type="seats"]').length===2`))throw Error('Second seat missing');
+    await run(`document.querySelector('#doorList [data-entry-type="seats"]').click()`);await delay(250);
+    if(!await run(`document.getElementById('seatList').selectedIndex===0`))throw Error('Seat sidebar selection did not sync inspector');
+    await run(`document.getElementById('seatRemove').click()`);await delay(250);
+    if(!await run(`document.querySelectorAll('#doorList [data-entry-type="seats"]').length===1`))throw Error('Removed seat remains in sidebar');
+    win.showInactive();await delay(400);
+    fs.writeFileSync(path.join(base,'seat-preview.png'),(await win.webContents.capturePage()).toPNG());
+    await run(`document.getElementById('tab-lights').click();document.getElementById('newLight').click();Array.from(document.querySelectorAll('#tree .piece-label')).find(n=>n.textContent.includes('Luminaria')).click();document.getElementById('assignLamp').click();Array.from(document.querySelectorAll('#tree .piece-label')).find(n=>n.textContent.includes('Interruptor')).click();document.getElementById('assignSwitch').click();document.getElementById('lampType').value='spot';document.getElementById('lampType').dispatchEvent(new Event('change'));document.getElementById('lampRange').value=3;document.getElementById('applyLamp').click();`);
+    await delay(200);win.showInactive();await delay(400);
+    fs.writeFileSync(path.join(base,'spot-preview.png'),(await win.webContents.capturePage()).toPNG());
+    if(!await run(`document.getElementById('lampType').value==='spot' && document.getElementById('status').textContent.includes('Editar luz')`))throw Error('Spotlight UI failed');
+    await run(`document.getElementById('openExport').click()`);await delay(250);
+    if(!await run(`document.getElementById('playArma').hidden`))throw Error('Play enabled without export');
+    await run(`document.getElementById('exportDialog').close();document.getElementById('tab-interiors').click()`);
+    await run(`Array.from(document.querySelectorAll('#tree .piece-label')).find(n=>n.textContent==='Pared izquierda').click();document.getElementById('cutUse').click();document.getElementById('cutMode').value='visual';for(const [key,value]of Object.entries({'center-x':0,'center-y':-.5,'center-z':0,'size-x':.7,'size-y':2,'size-z':.5}))document.getElementById('cut-'+key).value=value;document.getElementById('cutPreview').click()`);
+    if(!await run(`!document.getElementById('cutApply').disabled && document.getElementById('cutResult').textContent.includes('Caras afectadas:')`))throw Error('Volume cut preview failed');
+    await run(`document.querySelector('[data-component=faces]').click()`);
+    if(!await run(`document.getElementById('tab-interiors').getAttribute('aria-selected')==='true' && document.querySelector('[data-component=faces]').getAttribute('aria-pressed')==='true' && !document.getElementById('cutApply').disabled`))throw Error('Volume face selection left Interiors or lost the preview');
+    await run(`document.querySelector('[data-component=objects]').click();document.getElementById('cutApply').click()`);
+    if(!await run(`document.getElementById('status').textContent.startsWith('Recorte aplicado.')`))throw Error('Volume cut apply failed');
+    await run(`document.getElementById('undo').click()`);
+    const beforeRoom=await run(`document.querySelectorAll('#tree .piece-label').length`);
+    await run(`document.getElementById('interiorPreview').click();document.getElementById('interior-width').value=5;document.getElementById('interior-width').dispatchEvent(new Event('input',{bubbles:true}))`);
+    if(await run(`document.querySelectorAll('#tree .piece-label').length`)!==beforeRoom)throw Error('Preview added model objects');
+    await run(`document.getElementById('interiorCreate').click()`);await delay(250);
+    if(await run(`document.querySelectorAll('#tree .piece-label').length`)!==beforeRoom+8)throw Error('Room creation failed');
+    await run(`document.getElementById('undo').click()`);await delay(200);
+    if(await run(`document.querySelectorAll('#tree .piece-label').length`)!==beforeRoom)throw Error('Room undo failed');
+    await run(`document.getElementById('redo').click();document.getElementById('tab-interiors').click()`);await delay(200);
+    if(await run(`document.querySelectorAll('#tree .piece-label').length`)!==beforeRoom+8)throw Error('Room redo failed');
+    win.showInactive();await delay(300);fs.writeFileSync(path.join(base,'interiors.png'),(await win.webContents.capturePage()).toPNG());
+    console.log('Workspace smoke passed: repeat save, thumbnails, gallery reopen, update notice/Later, preview controls, export gating.');
+    console.log('Isolated test files: '+base);app.exit(0);
+  }catch(e){console.error(e);app.exit(1);}
+});
+
+
+

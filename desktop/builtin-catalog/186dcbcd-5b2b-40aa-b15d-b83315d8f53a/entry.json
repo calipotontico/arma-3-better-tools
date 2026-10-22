@@ -1,0 +1,18 @@
+{
+  "id": "186dcbcd-5b2b-40aa-b15d-b83315d8f53a",
+  "name": "Baldosas",
+  "texture": "6b497f7b403c47e7f754_color.paa",
+  "rvmat": "60161313a93f86d7857d.rvmat",
+  "files": [
+    "6b497f7b403c47e7f754_color.paa",
+    "60161313a93f86d7857d.rvmat"
+  ],
+  "builtin": true,
+  "names": {
+    "es": "Baldosas",
+    "en": "Tiles"
+  },
+  "source": "https://ambientcg.com/a/Tiles001",
+  "license": "CC0-1.0",
+  "licenseUrl": "https://docs.ambientcg.com/license/"
+}
