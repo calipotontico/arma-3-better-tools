@@ -1,6 +1,7 @@
 const fs=require('node:fs/promises');
 const path=require('node:path');
 const {spawn}=require('node:child_process');
+const {prepareEdenMission,edenArguments}=require('./eden-launch.cjs');
 function safeName(name){return String(name||'proyecto').replace(/[<>:"/\\|?*\x00-\x1f]/g,'_').replace(/[. ]+$/,'').slice(0,100)||'proyecto';}
 async function uniqueProject(folder,name){
   await fs.mkdir(folder,{recursive:true});
@@ -64,7 +65,8 @@ function installWorkspace({ipcMain,allow,dialog,win,app,tr,preferences,persist,g
     if(!preferences.arma)throw Error(tr('Selecciona el ejecutable de Arma 3 en Ajustes.','Select the Arma 3 executable in Settings.'));
     await fs.access(preferences.arma);await fs.access(path.join(mod,'addons'));
     if(mod.includes(';'))throw Error(tr('La ruta del mod no puede contener punto y coma.','The mod path cannot contain a semicolon.'));
-    await new Promise((resolve,reject)=>{const child=spawn(preferences.arma,['-noSplash','-mod='+mod],{cwd:path.dirname(preferences.arma),detached:true,stdio:'ignore',shell:false});child.once('error',reject);child.once('spawn',()=>{child.unref();resolve();});});
+    const mission=await prepareEdenMission(app.getPath('userData'));
+    await new Promise((resolve,reject)=>{const child=spawn(preferences.arma,edenArguments(mod,mission),{cwd:path.dirname(preferences.arma),detached:true,stdio:'ignore',shell:false});child.once('error',reject);child.once('spawn',()=>{child.unref();resolve();});});
     return true;
   });
 }

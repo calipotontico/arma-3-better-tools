@@ -14,7 +14,7 @@ export function installExportUI(api){
     const showLocation=values=>location.textContent=values.exports;
     workspace.settings().then(showLocation).catch(()=>{});
     folder.onclick=async()=>{try{showLocation(await workspace.choose('exports'));}catch(e){$('buildLog').textContent=e.message;}};
-    play.onclick=async()=>{play.disabled=true;try{await workspace.play();$('buildLog').textContent+='\n'+(getLanguage()==='en'?'Arma 3 started with the exported mod. Open Eden and place the building. Close an existing game before testing a new export.':'Arma 3 iniciado con el mod exportado. Abre Eden y coloca el edificio. Cierra el juego anterior antes de probar otra exportación.');}catch(e){$('buildLog').textContent+='\n'+e.message;}finally{play.disabled=false;}};
+    play.onclick=async()=>{play.disabled=true;try{await workspace.play();$('buildLog').textContent+='\n'+(getLanguage()==='en'?'Arma 3 is opening Eden on VR with the exported mod. Place your building in the editor. Close an existing game before testing a new export.':'Arma 3 está abriendo Eden en VR con el mod exportado. Coloca tu edificio en el editor. Cierra el juego anterior antes de probar otra exportación.');}catch(e){$('buildLog').textContent+='\n'+e.message;}finally{play.disabled=false;}};
   }
   const sizing=document.createElement('section');sizing.innerHTML=`<h3>Comprobar tamaño real</h3><p id="realDimensions" class="hint"></p><div class="export-actions"><button type="button" data-units="1">Modelo en metros</button><button type="button" data-units="0.01">Modelo en centímetros</button><button type="button" data-units="0.001">Modelo en milímetros</button></div><label for="scaleDoor">Puerta de referencia</label><select id="scaleDoor"></select><label for="realDoorHeight">Altura real de esa puerta en metros</label><input id="realDoorHeight" type="number" min="0.01" step="0.01" value="2.1"><button type="button" id="fitDoorScale">Calcular escala con esta puerta</button><p class="hint">2,10 m es una referencia orientativa: introduce la altura que quieras para tu puerta. El ajuste se aplica al modelo, las colisiones, los suelos y Memory en el visor. Cierra este panel para comparar con la figura de 1,80 m. El factor pendiente vuelve a 1 para no aplicar la escala dos veces.</p><p id="scaleWarning" role="status"></p>`;
   $('addonScale').closest('.export-fields').after(sizing);
@@ -74,3 +74,4 @@ export function installExportUI(api){
     finally{building=false;folder.disabled=false;$('buildAddon').disabled=false;$('closeExport').disabled=false;$('previewConfig').disabled=false;$('chooseTools').disabled=false;}
   };
 }
+

@@ -22,6 +22,10 @@ export function variants(files){
     resolution,size:v.gltf.size+Object.values(v.gltf.include||{}).reduce((n,f)=>n+f.size,0)
   })).sort((a,b)=>parseInt(a.resolution)-parseInt(b.resolution));
 }
+export function textureVariants(files){
+  const diffuse=files.Diffuse||files.diff||files.diffuse||files.albedo||{};
+  return Object.entries(diffuse).filter(([r,v])=>/^[124]k$/.test(r)&&(v.jpg?.url||v.png?.url)).map(([resolution,v])=>({resolution,...(v.jpg?.url?v.jpg:v.png),mime:v.jpg?.url?'image/jpeg':'image/png'})).sort((a,b)=>parseInt(a.resolution)-parseInt(b.resolution));
+}
 export class PolyHaven{
   constructor(folder){this.folder=folder;this.catalog=null;}
   async list(){
@@ -30,6 +34,29 @@ export class PolyHaven{
     return Object.entries(all).filter(([,v])=>v.type===2).map(([id,v])=>({id,name:v.name,tags:v.tags||[],category:v.category||'',polycount:v.polycount,thumbnail:v.thumbnail_url}));
   }
   async files(id){if(!idPattern.test(id))throw Error('Invalid asset ID');return json('https://api.polyhaven.com/files/'+id);}
+  async listTextures(){
+    if(!this.textureCatalog)this.textureCatalog=(async()=>{
+      const file=path.join(this.folder,'texture-catalog.json');let all;
+      try{all=await json('https://api.polyhaven.com/assets?t=textures');await fs.mkdir(this.folder,{recursive:true});await fs.writeFile(file,JSON.stringify(all));}
+      catch(e){try{all=JSON.parse(await fs.readFile(file,'utf8'));}catch{throw e;}}
+      return Object.entries(all).filter(([,v])=>v.type===1).map(([id,v])=>({id,name:v.name,tags:v.tags||[],category:v.category||'',thumbnail:v.thumbnail_url}));
+    })().catch(e=>{this.textureCatalog=null;throw e;});
+    return this.textureCatalog;
+  }
+  async textureDetails(id){return textureVariants(await this.files(id)).map(({resolution,size})=>({resolution,size}));}
+  async textureThumbnail(id){
+    const item=(await this.listTextures()).find(v=>v.id===id);if(!item?.thumbnail)return '';
+    return 'data:image/webp;base64,'+(await bytes(item.thumbnail,5*1024*1024)).toString('base64');
+  }
+  async downloadTexture(id,resolution){
+    if(!idPattern.test(id)||! /^[124]k$/.test(resolution))throw Error('Invalid texture selection');
+    const file=path.join(this.folder,`texture-${id}-${resolution}.json`);
+    try{return JSON.parse(await fs.readFile(file,'utf8'));}catch{}
+    const record=textureVariants(await this.files(id)).find(v=>v.resolution===resolution);if(!record)throw Error('No compatible color texture');
+    const b=await bytes(record.url,40*1024*1024);if(record.md5&&createHash('md5').update(b).digest('hex')!==record.md5)throw Error('Poly Haven checksum mismatch');
+    const result={id,resolution,source:`https://polyhaven.com/a/${id}`,license:'CC0',image:`data:${record.mime};base64,${b.toString('base64')}`};
+    await fs.mkdir(this.folder,{recursive:true});await fs.writeFile(file,JSON.stringify(result));return result;
+  }
   async details(id){return variants(await this.files(id));}
   async thumbnail(id){
     const item=(await this.list()).find(v=>v.id===id);if(!item?.thumbnail)return '';

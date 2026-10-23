@@ -1,6 +1,6 @@
 {
   "name": "arma-3-better-tools",
-  "version": "0.3.14",
+  "version": "0.3.15",
   "private": true,
   "type": "module",
   "scripts": {
@@ -26,6 +26,5 @@
   "productName": "Arma 3 Better Tools",
   "main": "desktop/main.cjs",
   "description": "Building editor and Arma 3 addon exporter",
-  "author": "Calipo",
-  "license": "SEE LICENSE IN LICENSE.txt"
+  "author": "Calipo"
 }

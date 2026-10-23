@@ -105,3 +105,9 @@ body.editor-shell{font-size:14px;--left-width:280px;--right-width:370px}
 .project-library-card img,.project-library-placeholder { width:100%;aspect-ratio:16/10;object-fit:cover;background:#14181d; }
 .project-library-placeholder { display:grid;place-items:center;color:#9aa4af; }
 .project-library-card strong { overflow-wrap:anywhere; }
+.viewbar #cameraView{width:auto;max-width:160px;padding:5px 7px;font-size:12px;pointer-events:auto;margin-left:auto;margin-right:8px;}
+#toolbarInvertFaces svg{width:18px;height:18px;display:block;}
+
+#textureSearchPanel{margin-bottom:16px}#textureSearchPanel p{font-size:12px;line-height:1.5}#textureSearchPanel form{display:flex;gap:6px}#textureSearchPanel input{min-width:0}#textureSearchPanel select{width:100%;margin-bottom:8px}
+
+.editor-shell #tab-layers{white-space:normal;line-height:1.25;overflow-wrap:normal}

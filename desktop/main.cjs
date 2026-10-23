@@ -30,7 +30,7 @@ app.whenReady().then(async()=>{
   const {Updates}=require('./updates.cjs');
   updates=new Updates(autoUpdater,!!autoUpdater&&app.isPackaged&&release.updatesEnabled,state=>{if(!win?.isDestroyed())win?.webContents.send('updates:state',state);if(state.status==='error')closeAllowed=false;});
   ipcMain.handle('app:info',event=>{allow(event);return {version:require('../package.json').version,language};});
-  for(const method of ['list','details','thumbnail','download'])ipcMain.handle('polyhaven:'+method,(event,...args)=>{allow(event);return polyhaven[method](...args);});
+  for(const method of ['list','details','thumbnail','download','listTextures','textureDetails','textureThumbnail','downloadTexture'])ipcMain.handle('polyhaven:'+method,(event,...args)=>{allow(event);return polyhaven[method](...args);});
   ipcMain.handle('app:language',async(event,value)=>{allow(event);if(!['es','en'].includes(value))throw Error('Invalid language');language=value;await persist();return language;});
   ipcMain.handle('updates:state',event=>{allow(event);return updates.state;});
   ipcMain.handle('updates:check',event=>{allow(event);return updates.check();});

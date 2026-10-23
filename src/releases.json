@@ -1,5 +1,27 @@
 [
   {
+    "version": "0.3.15",
+    "date": "2026-10-24",
+    "es": [
+      "Buscador de texturas CC0 de Poly Haven: búsqueda, resolución 1K/2K/4K y descarga del color base para aplicarlo a la selección.",
+      "Interiores para crear espacios; Geometrías y físicas para generar colisiones, Roadway y optimizar edificios grandes.",
+      "Optimizador con vista previa, zonas accesibles, bloques cerrados y piezas solo visuales; permite deshacer y conserva los ajustes al guardar.",
+      "Atajos 1/2/3 para mover, rotar y escalar; vistas frontal, trasera, laterales, superior, inferior y libre.",
+      "Conservación de selección al cambiar entre objetos, caras y puntos; selección de piezas exactas y pestañas que permanecen abiertas.",
+      "Inversión de caras desde la barra del visor y creación de ventanas desde caras.",
+      "Probar en Arma 3 prepara una misión de prueba para abrir Eden con el mod cargado. La apertura directa requiere comprobación en cada instalación."
+    ],
+    "en": [
+      "Poly Haven CC0 texture search: choose 1K/2K/4K and download base color to apply to the selection.",
+      "Interiors creates spaces; Geometry and physics generates collision, Roadway and optimizes large buildings.",
+      "Optimizer with preview, accessible areas, closed blocks and visual-only parts; supports undo and project persistence.",
+      "Shortcuts 1/2/3 for move, rotate and scale; front, back, side, top, bottom and free camera views.",
+      "Preserved selection across objects, faces and vertices; exact part picking and persistent inspector tabs.",
+      "Flip faces from the viewport toolbar and create windows from selected faces.",
+      "Test in Arma 3 prepares a test mission to open Eden with the mod loaded. Direct launch needs verification on each installation."
+    ]
+  },
+  {
     "version": "0.3.14",
     "date": "2026-10-21",
     "es": [
@@ -7,16 +29,14 @@
       "Análisis de estructura con lista revisable de piezas; reconoce paredes interiores, suelo y techo por nombre cuando están disponibles. Las capas manuales se conservan.",
       "Colisiones por superficies convexas para estructuras existentes, respetando habitaciones y huecos. Los modelos demasiado complejos requieren simplificación.",
       "Roadway calculado a partir de la orientación real de los triángulos, conservando huecos de escaleras y excluyendo puertas y cristales.",
-      "Las cajas automáticas ignoran vértices que no forman parte de las caras activas.",
-      "Proyecto 29a3f972: copia de prueba con 357 componentes y 32 puntos de suelo libres en la comprobación geométrica. Pendiente de validación dentro de Arma 3."
+      "Las cajas automáticas ignoran vértices que no forman parte de las caras activas."
     ],
     "en": [
       "Interiors: separate workflows to create rooms or prepare models with an existing interior.",
       "Structural analysis with a reviewable parts list; recognizes named interior walls, floors and ceilings when available. Manual layers are preserved.",
       "Convex surface collision for existing structures, preserving rooms and openings. Overly complex models require simplification.",
       "Roadway uses actual triangle orientation, preserving stair openings and excluding doors and glass.",
-      "Automatic bounds ignore vertices outside active faces.",
-      "Project 29a3f972: test copy with 357 components and 32 clear floor samples in geometry checks. In-game Arma 3 validation pending."
+      "Automatic bounds ignore vertices outside active faces."
     ]
   },
   {

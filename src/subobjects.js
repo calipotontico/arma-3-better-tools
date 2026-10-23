@@ -49,7 +49,28 @@ export function installSubobjects(api){
     $('componentCount').textContent=`${count} ${mode==='points'?'vértices seleccionados (incluye duplicados de UV)':'triángulos seleccionados'}`;$('componentInvert').disabled=!count;$('pointsToFaces').disabled=!count;
     for(const id of ['pointGizmo','pointMove','pointWeld'])$(id).disabled=!count;refreshGizmo();
   }
-  function setMode(value){if($('layerMode').value!=='visual'){mode='objects';selection.clear();gizmo.detach();$('componentMode').value=value;draw();return;}api.close();api.clear();api.stop();moving=false;gizmo.detach();mode=value;selection.clear();$('componentMode').value=value;draw();}
+  let remembered=null;
+  function setMode(value){
+    if($('layerMode').value!=='visual'){mode='objects';gizmo.detach();$('componentMode').value=value;draw();return;}
+    if(value===mode)return;
+    const available=meshes(),previous=mode;
+    if(value==='objects'){
+      const selected=available.filter(m=>selection.get(m.uuid)?.size);
+      remembered={mode:previous,selection:new Map([...selection].map(([id,ids])=>[id,new Set(ids)])),meshes:selected,geometries:selected.map(m=>m.geometry)};
+      mode=value;api.selectObjects?.(selected);
+    }else{
+      if(previous==='objects'){
+        const objects=api.selection?.()||[],selected=available.filter(m=>objects.some(o=>{for(let p=m;p;p=p.parent)if(p===o)return true;return false;}));
+        const reusable=remembered&&selected.length===remembered.meshes.length&&selected.every(m=>{const i=remembered.meshes.indexOf(m);return i>=0&&m.geometry===remembered.geometries[i];});
+        selection=new Map();
+        if(reusable){selection=new Map([...remembered.selection].map(([id,ids])=>[id,new Set(ids)]));mode=remembered.mode;}
+        else{mode=value;for(const m of selected){const ids=new Set();if(value==='points')for(const i of activePoints(m.geometry))ids.add(i);else eachFace(m,f=>ids.add(f));selection.set(m.uuid,ids);}}
+      }
+      if(mode!==value)for(const m of available){const ids=selection.get(m.uuid);if(ids)selection.set(m.uuid,value==='points'?new Set([...ids].flatMap(f=>triangleIndices(m.geometry,f))):new Set(facesFromPoints(m.geometry,ids)));}
+      mode=value;api.clear();
+    }
+    api.close();api.stop();moving=false;gizmo.detach();$('componentMode').value=value;draw();
+  }
   function apply(hits,gesture){if(!gesture.ctrl&&!gesture.subtract)selection.clear();for(const [m,i] of hits){if(!selection.has(m.uuid))selection.set(m.uuid,new Set());if(gesture.subtract)selection.get(m.uuid).delete(i);else selection.get(m.uuid).add(i);}draw();}
   function projected(m,i){return world(m,i).project(api.camera);}
   function inside(p,r){return p.z>=-1&&p.z<=1&&p.x>=r.minX&&p.x<=r.maxX&&p.y>=r.minY&&p.y<=r.maxY;}
@@ -62,7 +83,7 @@ export function installSubobjects(api){
   $('componentInvert').onclick=()=>{const targets=meshes().filter(m=>selection.get(m.uuid)?.size);if(!targets.length)return;const changed=targets.map(m=>[m,invertTriangles(m.geometry,selection.get(m.uuid))]);api.record('Invertir caras seleccionadas');for(const [m,g] of changed)m.geometry=g;selection.clear();draw();api.status('Caras seleccionadas invertidas. Ctrl + Z lo deshace.');};
   $('pointsToFaces').onclick=()=>{const next=new Map();for(const m of meshes())next.set(m.uuid,new Set(facesFromPoints(m.geometry,selection.get(m.uuid)||new Set())));mode='faces';selection=next;$('componentMode').value=mode;draw();};
   $('layerMode').addEventListener('change',()=>{setMode($('componentMode').value);});
-  return {selectedFaces:()=>mode==='faces'?meshes().filter(m=>selection.get(m.uuid)?.size).map(mesh=>({mesh,faces:new Set(selection.get(mesh.uuid))})):[],selectedObjects:()=>meshes().filter(m=>selection.get(m.uuid)?.size),active:()=>mode!=='objects',busy:()=>dragging||suppress||!!gizmo.axis,isDragging:()=>dragging||suppress,stopGizmo(){moving=false;gizmo.detach();},reset(){selection.clear();draw();},setMode,setTransformMode,
+  return {selectedFaces:()=>mode==='faces'?meshes().filter(m=>selection.get(m.uuid)?.size).map(mesh=>({mesh,faces:new Set(selection.get(mesh.uuid))})):[],selectedObjects:()=>meshes().filter(m=>selection.get(m.uuid)?.size),active:()=>mode!=='objects',busy:()=>dragging||suppress||!!gizmo.axis,isDragging:()=>dragging||suppress,stopGizmo(){moving=false;gizmo.detach();},reset(){remembered=null;selection.clear();draw();},setMode,setTransformMode,
     box(rect,gesture){if(mode==='objects')return false;const hits=[];for(const m of meshes())if(mode==='points'){for(const i of activePoints(m.geometry))if(inside(projected(m,i),rect))hits.push([m,i]);}else eachFace(m,(f,ids)=>{if(ids.every(i=>inside(projected(m,i),rect)))hits.push([m,f]);});apply(hits,gesture);return true;},
     click(ray,event,gesture){if(mode==='objects')return false;api.root()?.updateWorldMatrix(true,true);let hits=[];
       if(mode==='faces'){let nearest=Infinity;for(const m of meshes())eachFace(m,(f,ids)=>{const point=ray.ray.intersectTriangle(...ids.map(i=>world(m,i)),false,new THREE.Vector3());if(point){const distance=point.distanceTo(ray.ray.origin);if(distance<nearest){nearest=distance;hits=[[m,f]];}}});}

@@ -1,6 +1,7 @@
 import {installQuickUV} from './quick-uv.js';
 import {getLanguage,onLanguage} from './i18n.js';
 import * as THREE from 'three';
+import {installTextureSearch} from './texture-search.js';
 export function materialMeshes(objects){const set=new Set();for(const object of objects)object.traverse(m=>{if(m.isMesh)set.add(m);});return [...set];}
 export function applyLibraryMaterial(objects,entry,texture){
   for(const mesh of materialMeshes(objects)){
@@ -27,6 +28,7 @@ export function installMaterialLibrary(api){
   const panel=document.createElement('section');panel.id='materialLibrary';
   panel.innerHTML=`<h3>Mi biblioteca</h3><p class="hint">Disponible en todos tus proyectos. Cada material reúne textura y RVMAT. La vista previa es aproximada; Arma usa el RVMAT original.</p><label>Nombre del material<input id="libraryName" maxlength="80" placeholder="Por ejemplo, Cromado"></label><button id="libraryImport">Importar textura + RVMAT</button><label>Buscar<input id="librarySearch" type="search" placeholder="Nombre del material"></label><select id="libraryList" size="6" aria-label="Materiales de mi biblioteca"></select><img id="libraryPreview" alt="Vista previa de la textura" hidden><p id="libraryInfo" class="hint" role="status"></p><button id="libraryRename">Guardar nombre</button><button id="libraryApply" class="primary">Aplicar a la selección</button><button id="openUV">Abrir editor UV</button><p class="hint">Selecciona objetos o una pieza dentro de una puerta. Aplicar reemplaza sus materiales. Ctrl + Z deshace. Luces y cristales configurados conservan su material especial al exportar.</p>`;
   document.querySelector('.properties').append(panel);const $=id=>document.getElementById(id),service=window.desktop?.materials;
+  installTextureSearch(panel,api,materialMeshes);
   const category=document.createElement('select');category.id='libraryCategory';category.setAttribute('data-no-i18n','');$('librarySearch').before(category);
   const labels=()=>{const en=getLanguage()==='en';const old=category.value;category.replaceChildren(new Option(en?'All materials':'Todos los materiales','all'),new Option(en?'Included · CC0':'Incluidos · CC0','builtin'),new Option(en?'My materials':'Mis materiales','personal'));category.value=old||'all';category.setAttribute('aria-label',en?'Material collection':'Colección de materiales');paint();};
   let entries=[],current=null,loading=false,request=0;

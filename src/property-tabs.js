@@ -1,7 +1,7 @@
 // Move existing controls, retaining their listeners and editor state.
 export function installPropertyTabs({leaveComponents,stopGizmos,onChange=()=>{}}){
   const $=id=>document.getElementById(id),aside=document.querySelector('.properties');
-  const definitions=[['objects','Objetos'],['textures','Texturas'],['doors','Puertas'],['layers','Geometrías'],['shadows','Sombras'],['lights','Luces'],['glass','Cristales'],['ladders','Escaleras'],['scale','Escala'],['assets','Biblioteca 3D'],['seats','Asientos']];
+  const definitions=[['objects','Objetos'],['textures','Texturas'],['doors','Puertas'],['layers','Geometrías y físicas'],['shadows','Sombras'],['lights','Luces'],['glass','Cristales'],['ladders','Escaleras'],['scale','Escala'],['assets','Biblioteca 3D'],['seats','Asientos']];
   definitions.push(['interiors','Interiores']);
   const nav=document.createElement('div');nav.className='property-tabs';nav.setAttribute('role','tablist');nav.setAttribute('aria-label','Herramientas del edificio');
   const content=document.createElement('div');content.className='property-content';
@@ -37,7 +37,7 @@ export function installPropertyTabs({leaveComponents,stopGizmos,onChange=()=>{}}
     if(id===active)return;
     if(active)scroll.set(active,content.scrollTop);
     if(id!=='layers'&&$('layerMode').value!=='visual'){$('layerMode').value='visual';$('layerMode').dispatchEvent(new Event('change'));}
-    if(id!=='objects'&&id!=='layers'){leaveComponents();$('faceOrientation').checked=false;}
+    if(id!=='objects'&&id!=='layers')$('faceOrientation').checked=false;
     stopGizmos();active=id;
     if(id==='seats')$('seatRefresh')?.click();
     for(const [key,panel] of panels){panel.hidden=key!==id;buttons.get(key).setAttribute('aria-selected',String(key===id));buttons.get(key).tabIndex=key===id?0:-1;}
@@ -45,7 +45,7 @@ export function installPropertyTabs({leaveComponents,stopGizmos,onChange=()=>{}}
     onChange(id);
   }
   $('layerMode').addEventListener('change',()=>{if($('layerMode').value!=='visual')activate('layers');});
-  $('componentMode').addEventListener('change',()=>{if($('componentMode').value!=='objects'&&$('layerMode').value==='visual')activate('objects');});
   $('doorList').addEventListener('click',e=>{if(e.target.closest('button')?.dataset.entryType==='doors')activate('doors');});
   activate('objects');
 }
+

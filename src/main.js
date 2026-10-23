@@ -1,3 +1,4 @@
+import {installBuildingOptimizer} from './building-optimizer.js';
 import {installInteractionPreview} from './interaction-preview.js';
 import {installInteriors} from './interiors.js';
 import {installExistingInterior} from './existing-interior.js';
@@ -16,6 +17,7 @@ import {installDoorControls} from './door-controls.js';
 import {garageMotion} from './garage-door.js';
 import {slideMatrix,syncDoorSwitch,validateDoorMotion} from './door-motion.js';
 import { installUnifiedToolbar } from './unified-toolbar.js';
+import { installCameraViews } from './camera-views.js';
 import {interactionFields} from './interaction.js';
 import { installTutorial } from './tutorial.js';
 import { installSceneTree } from './scene-tree.js';
@@ -36,7 +38,7 @@ import { FBXLoader } from 'three/addons/loaders/FBXLoader.js';
 import { proposeAxis, doorMatrix, groupDoor, detachPiece, ungroupDoor, addDoorPieces } from './door.js';
 import './style.css';
 import './editor-shell.css';
-import { doorOwner, selectionObject } from './selection.js';
+import { doorOwner, selectionObject, visibleSurfaceHit } from './selection.js';
 import { cloneScene } from './history.js';
 import { createEditor } from './editor.js';
 import { installLayerEditor } from './layer-editor.js';
@@ -51,7 +53,7 @@ import { installViewportInput, meshesInRectangle } from './viewport-input.js';
 let doorControls;const linkedPreview=new Map();
 let interactionPreview;
 let volumeCut;
-let sceneTree,contextList,uvEditor,editor,layerEditor,subEditor,scaleEditor,faceOrientation,shadowEditor,lightEditor,glassEditor;
+let buildingOptimizer,sceneTree,contextList,uvEditor,editor,layerEditor,subEditor,scaleEditor,faceOrientation,shadowEditor,lightEditor,glassEditor;
 const $ = id => document.getElementById(id);
 const status = text => $('status').textContent = text;
 const saveState=new ProjectSaveState();let checkingClose=false;
@@ -83,7 +85,7 @@ const controls = new OrbitControls(camera,renderer.domElement); controls.enableD
 scene.add(new THREE.HemisphereLight(0xdce9ff,0x625440,2.5));
 const light = new THREE.DirectionalLight(0xfff0de,3); light.position.set(5,10,7); scene.add(light);
 let grid = new THREE.GridHelper(20,20,0x58616d,0x303943); scene.add(grid);
-let chosen=[];
+let chosen=[],cameraViews=null;
 let memberMode=false;
 let root=null, meshes=[], selected=null, baseLocal=null, baseWorld=null, doors={}, playing=false, progress=0, fileName='';
 const axis = new THREE.Group(); scene.add(axis); axis.visible=false;
@@ -95,7 +97,7 @@ function restore(){playing=false;for(const [object,state] of linkedPreview){obje
 function clearSelection(){scaleEditor?.stopGizmo();interactionPreview?.stopGizmo();restore();memberMode=false;$('memberContext').hidden=true;$('addToDoor').disabled=true;$('addToDoor').textContent='Añadir a puerta existente';$('doorManagement').hidden=true;chosen=[];$('groupDoor').disabled=true;selected=null;baseLocal=null;baseWorld=null;axis.visible=false;highlight.visible=false;$('settings').disabled=true;$('selectionName').removeAttribute('data-no-i18n');$('selectionName').textContent='Selecciona una pieza';}
 function dispose(object){object.traverse(o=>{o.geometry?.dispose();for(const m of (Array.isArray(o.material)?o.material:[o.material])){if(!m)continue;for(const v of Object.values(m))if(v?.isTexture)v.dispose();m.dispose();}});}
 function mount(model,name,config={},fromHistory=false){if(!fromHistory){markDirty();window.desktop?.project?.reset();}clearSelection();if(root){scene.remove(root);if(!fromHistory)dispose(root);}root=model;fileName=name;doors=config;scene.add(root);root.updateMatrixWorld(true);meshes=[];root.traverse(o=>{if(o.isMesh){meshes.push(o);}});sceneTree?.render();$('count').textContent=meshes.length;$('modelName').setAttribute('data-no-i18n','');$('modelName').textContent=name;$('empty').hidden=true;$('save').disabled=false;renderDoors();if(!fromHistory){editor?.reset();frame();}layerEditor?.rebuild();subEditor?.reset();scaleEditor?.update();status(`${name} · ${meshes.length} piezas. Selecciona la puerta.`);}
-function frame(){if(!root)return;scaleEditor?.update();const box=new THREE.Box3().setFromObject(root);if(scaleEditor)box.union(scaleEditor.bounds());if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()).length()||1;camera.position.copy(center).add(new THREE.Vector3(1,.65,1).normalize().multiplyScalar(size*1.5));controls.target.copy(center);camera.near=size/1000;camera.far=size*100;camera.updateProjectionMatrix();controls.maxDistance=size*20;grid.position.y=box.min.y;grid.scale.setScalar(size/10);controls.update();}
+function frame(){if(!root)return;scaleEditor?.update();const box=new THREE.Box3().setFromObject(root);if(scaleEditor)box.union(scaleEditor.bounds());if(box.isEmpty())return;const center=box.getCenter(new THREE.Vector3()),size=box.getSize(new THREE.Vector3()).length()||1;camera.position.copy(center).add(new THREE.Vector3(1,.65,1).normalize().multiplyScalar(size*1.5));controls.target.copy(center);camera.near=size/1000;camera.far=size*100;camera.updateProjectionMatrix();controls.maxDistance=size*20;grid.position.y=box.min.y;grid.scale.setScalar(size/10);controls.update();cameraViews?.frame();}
 function selectionTarget(mesh){return selectionObject(mesh,root);}
 function updateHighlight(){
   highlight.box.makeEmpty();
@@ -245,7 +247,7 @@ $('auto').onclick=()=>{if(!selected)return;restore();doors[selected.uuid]={...do
 $('angle').oninput=()=>{doors[selected.uuid].angle=Number($('angle').value);$('angleValue').value=$('angle').value+'°';preview();};
 $('progress').oninput=()=>{playing=false;progress=Number($('progress').value)/100;$('play').textContent='▶ Probar apertura';preview();};
 $('close').onclick=()=>{restore();preview();};$('play').onclick=()=>{playing=!playing;if(playing&&progress>=1)progress=0;$('play').textContent=playing?'Ⅱ Pausar':'▶ Probar apertura';};$('frame').onclick=frame;
-let last=0;renderer.setAnimationLoop(time=>{if(playing&&selected){progress=Math.min(1,progress+Math.min((time-last)/1000,.05)/1.4);preview();if(progress>=1){playing=false;$('play').textContent='▶ Probar apertura';}}last=time;controls.update();interactionPreview?.update();shadowEditor?.update();uvEditor?.update();contextList?.update();const draw=()=>faceOrientation?faceOrientation.render(root,()=>renderer.render(scene,camera)):renderer.render(scene,camera);const glassDraw=()=>glassEditor?glassEditor.render(draw):draw();if(lightEditor)lightEditor.render(glassDraw);else glassDraw();});
+let last=0;renderer.setAnimationLoop(time=>{if(playing&&selected){progress=Math.min(1,progress+Math.min((time-last)/1000,.05)/1.4);preview();if(progress>=1){playing=false;$('play').textContent='▶ Probar apertura';}}last=time;controls.update();buildingOptimizer?.update();interactionPreview?.update();shadowEditor?.update();uvEditor?.update();contextList?.update();const draw=()=>faceOrientation?faceOrientation.render(root,()=>renderer.render(scene,camera)):renderer.render(scene,camera);const glassDraw=()=>glassEditor?glassEditor.render(draw):draw();if(lightEditor)lightEditor.render(glassDraw);else glassDraw();});
 function demo(tutorial=false){const g=new THREE.Group();const add=(name,size,pos,color)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(...size),new THREE.MeshStandardMaterial({color,roughness:.8}));m.name=name;m.position.set(...pos);g.add(m);return m;};add('Pared izquierda',[1.8,3,.22],[-1.5,1.5,0],0x8b969b);add('Pared derecha',tutorial?[1.8,.9,.22]:[1.8,3,.22],tutorial?[1.5,.45,0]:[1.5,1.5,0],0x8b969b);add('Dintel',[1.2,.75,.22],[0,2.625,0],0xa0a8a7);add('Suelo',[5,.12,3],[0,-.06,0],0x59636c);const door=add('Puerta principal',[1.16,2.22,.12],[0,1.11,0],0xa67851);add('Manilla',[.22,.06,.08],[.36,1.08,.10],0xc7cbd0);if(tutorial){add('Dintel ventana',[1.8,.9,.22],[1.5,2.55,0],0x8b969b);add('Marco izquierdo',[.2,1.2,.22],[.7,1.5,0],0x8b969b);add('Marco derecho',[.2,1.2,.22],[2.3,1.5,0],0x8b969b);const glass=add('Cristal',[1.4,1.2,.025],[1.5,1.5,0],0xb8d4df);glass.material.transparent=true;glass.material.opacity=.3;add('Luminaria',[.5,.08,.25],[0,2.8,.3],0xffffff);add('Interruptor',[.08,.12,.05],[.7,1.1,.15],0xe4e4e4);}mount(g,'Edificio de ejemplo');select(door);}
 $('demo').onclick=demo;
 for(const id of ['import','importEmpty'])$(id).onclick=async()=>{if(await mayClose())$('files').click();};
@@ -284,7 +286,7 @@ installExportUI({root:()=>root,doors:()=>doors,close:restore,status,applyScale:f
 
 layerEditor=installLayerEditor({camera,canvas:renderer.domElement,scene,controls,status,root:()=>root,doors:()=>doors,close:restore,clear:clearSelection,stopGizmo:()=>editor.stopGizmo(),record:label=>editor.record(label)});
 
-subEditor=installSubobjects({scene,camera,controls,canvas:renderer.domElement,root:()=>root,close:restore,clear:clearSelection,stop:()=>editor.stopGizmo(),record:label=>editor.record(label),status});
+subEditor=installSubobjects({scene,camera,controls,canvas:renderer.domElement,root:()=>root,selection:()=>chosen,selectObjects:objects=>{chosen=objects;finishSelection();},close:restore,clear:clearSelection,stop:()=>editor.stopGizmo(),record:label=>editor.record(label),status});
 installRecalculate({root:()=>root,close:restore,selection:()=>subEditor.active()?subEditor.selectedObjects():layerEditor.active()?layerEditor.selectedObjects():chosen,record:label=>editor.record(label),refresh:()=>layerEditor.rebuild(),status});
 scaleEditor=installScaleEditor({scene,camera,controls,canvas:renderer.domElement,stopOthers:()=>{subEditor.setMode('objects');if(layerEditor.active()){$('layerMode').value='visual';$('layerMode').dispatchEvent(new Event('change'));}editor.stopGizmo();layerEditor.stopGizmo();subEditor.stopGizmo();},root:()=>root,doors:()=>doors,close:restore,clear:clearSelection,record:label=>editor.record(label),refresh:()=>{layerEditor.rebuild();subEditor.reset();},frame,status});
 function selectBatch(objects,gesture){scaleEditor.stopGizmo();interactionPreview?.stopGizmo();
@@ -294,7 +296,7 @@ function selectBatch(objects,gesture){scaleEditor.stopGizmo();interactionPreview
 }
 installViewportInput({canvas:renderer.domElement,controls,navigate:active=>{scene.traverse(o=>{if(o.isTransformControlsRoot){o.controls.enabled=!active;}});},layerActive:()=>layerEditor.active(),busy:()=>volumeCut?.busy()||editor.isBusy()||layerEditor.busy()||subEditor.busy()||scaleEditor.busy()||interactionPreview?.busy(),dragging:()=>volumeCut?.isDragging()||editor.isDragging()||layerEditor.isDragging()||subEditor.isDragging()||scaleEditor.isDragging()||interactionPreview?.isDragging(),stopGizmo:()=>{volumeCut?.stopGizmo();editor.stopGizmo();layerEditor.stopGizmo();subEditor.stopGizmo();scaleEditor.stopGizmo();interactionPreview?.stopGizmo();},
   box:(rect,gesture)=>{if(subEditor.box(rect,gesture))return;selectBatch(meshesInRectangle(meshes,camera,rect),gesture);status(`${chosen.length} objetos seleccionados. El rectángulo incluye piezas ocultas detrás si quedan completamente dentro.`);},
-  click:(e,gesture)=>{const r=renderer.domElement.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);if(volumeCut?.pick(ray)||interactionPreview?.pick(ray)||scaleEditor.pick(ray))return;scaleEditor.stopGizmo();interactionPreview?.stopGizmo();if(layerEditor.pick(ray)||subEditor.click(ray,e,gesture))return;const hit=ray.intersectObjects(meshes,false).find(h=>{for(let p=h.object;p;p=p.parent)if(!p.visible)return false;return true;});selectBatch(hit?[hit.object]:[],gesture);}
+  click:(e,gesture)=>{const r=renderer.domElement.getBoundingClientRect(),ray=new THREE.Raycaster();ray.setFromCamera(new THREE.Vector2((e.clientX-r.left)/r.width*2-1,-(e.clientY-r.top)/r.height*2+1),camera);if(volumeCut?.pick(ray)||interactionPreview?.pick(ray)||scaleEditor.pick(ray))return;scaleEditor.stopGizmo();interactionPreview?.stopGizmo();if(layerEditor.pick(ray)||subEditor.click(ray,e,gesture))return;const hit=visibleSurfaceHit(ray.intersectObjects(meshes,false));if(hit&&document.getElementById('pickExactPiece')?.getAttribute('aria-pressed')==='true'&&doorOwner(hit.object,root)){select(hit.object,gesture.ctrl,true);}else selectBatch(hit?[hit.object]:[],gesture);}
 });
 
 faceOrientation=installFaceOrientation();
@@ -336,6 +338,7 @@ const interiors=installInteriors({scene,selection:()=>chosen,status,commit:room=
 }});
 volumeCut=installVolumeCut({scene,camera,canvas:renderer.domElement,controls,stopOthers:()=>{editor.stopGizmo();layerEditor.stopGizmo();subEditor.stopGizmo();scaleEditor.stopGizmo();interactionPreview?.stopGizmo();},root:()=>root,doors:()=>doors,selection:()=>chosen,close:restore,record:label=>editor.record(label),refresh:()=>mount(root,fileName,doors,true),status});
 installExistingInterior({root:()=>root,doors:()=>doors,close:restore,record:label=>editor.record(label),refresh:()=>mount(root,fileName,doors,true),status});
+buildingOptimizer=installBuildingOptimizer({scene,root:()=>root,doors:()=>doors,selection:()=>subEditor.active()?subEditor.selectedObjects():chosen,close:restore,record:label=>editor.record(label),refresh:()=>layerEditor.rebuild(),status});
 installPropertyTabs({onChange:tab=>{contextList.setTab(tab);if(tab!=='interiors'){interiors.clear();volumeCut.clear();}},leaveComponents:()=>{if(subEditor.active())subEditor.setMode("objects");},stopGizmos:()=>{editor.stopGizmo();layerEditor.stopGizmo();subEditor.stopGizmo();scaleEditor.stopGizmo();interactionPreview?.stopGizmo();}});
 
 installAppSettings({mayClose,status});
@@ -401,5 +404,7 @@ deleteObjects.onclick=()=>{
 };
 
 installUnifiedToolbar({editor,subEditor,layerEditor,volumeCut});
+cameraViews=installCameraViews({camera,controls,root:()=>root});
 installTutorial({demo,mayClose,canvas:renderer.domElement,camera,controls,selection:()=>chosen});
+
 

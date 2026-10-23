@@ -208,6 +208,8 @@ Objetos|Objects
 Texturas|Textures
 Puertas|Doors
 Geometrías|Geometry
+Geometrías y físicas|Geometry and physics
+Generar físicas desde el modelo|Generate physics from the model
 Escaleras|Ladders
 Biblioteca 3D|3D library
 Asientos|Seats
@@ -590,3 +592,4 @@ Object.assign(english, {
   'Anchura del inspector':'Inspector width',
   '▧   Puerta':'▧   Door'
 });
+

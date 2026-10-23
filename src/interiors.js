@@ -40,6 +40,9 @@ export function createRoom(s){
 export function installInteriors(api){
   const panel=document.createElement('section');panel.id='interiorPanel';panel.dataset.noI18n='';
   document.querySelector('.properties').append(panel);
+  const purpose=document.createElement('p');purpose.className='hint';
+  const purposeLabel=()=>purpose.textContent=tr('Crea o modifica espacios: habitaciones, paredes, suelos, techos y huecos. Para generar colisiones y Roadway desde un modelo existente, usa Geometrías y físicas.','Create or modify spaces: rooms, walls, floors, ceilings and openings. To generate collision and Roadway from an existing model, use Geometry and physics.');
+  purposeLabel();onLanguage(purposeLabel);
   const text=(es,en)=>`<span data-es="${es}" data-en="${en}">${tr(es,en)}</span>`;
   const fields=[['width','Ancho útil (m)','Usable width (m)',4],['depth','Fondo útil (m)','Usable depth (m)',5],['height','Altura útil (m)','Usable height (m)',2.8],['thickness','Grosor de paredes y suelo (m)','Wall and floor thickness (m)',.15],['openingWidth','Ancho de entrada (m)','Entrance width (m)',1],['openingHeight','Altura de entrada (m)','Entrance height (m)',2.1],['openingOffset','Desplazamiento lateral de entrada (m)','Entrance sideways offset (m)',0],['x','Posición X (m)','Position X (m)',0],['y','Altura del suelo Y (m)','Floor height Y (m)',0],['z','Posición Z (m)','Position Z (m)',0],['heading','Giro (°)','Rotation (°)',0]];
   panel.innerHTML=`<h3>${text('Habitación de una planta','Single-storey room')}</h3><p>${text('Crea paredes, suelo y una entrada transitable. El suelo empieza en la altura Y indicada; el grosor crece hacia fuera.','Creates walls, a floor and a walkable entrance. Floor level is the specified Y height; thickness grows outward.')}</p><button id="interiorFit">${text('Centrar en la selección','Center on selection')}</button>`;
@@ -50,6 +53,7 @@ export function installInteriors(api){
   }
   panel.insertAdjacentHTML('beforeend',`<label><input id="interior-ceiling" type="checkbox" checked>${text('Añadir techo','Add ceiling')}</label><p>${text('La entrada está en el lado −Z antes de girar. Esta primera fase añade una habitación: no recorta el exterior ni elimina las colisiones del edificio existente. Si se superponen, seguirán bloqueando el paso.','The entrance is on the −Z side before rotation. This first stage adds a room: it does not cut the exterior or remove existing building collisions. Overlapping collisions will still block passage.')}</p><button id="interiorPreview">${text('Ver vista previa','Show preview')}</button><button id="interiorHide">${text('Ocultar vista previa','Hide preview')}</button><button id="interiorCreate" class="primary">${text('Crear habitación','Create room')}</button>`);
   onLanguage(()=>panel.querySelectorAll('[data-es]').forEach(e=>e.textContent=tr(e.dataset.es,e.dataset.en)));
+  panel.prepend(purpose);
   const $=id=>document.getElementById(id);
   let preview=null;
   const read=()=>({...Object.fromEntries(fields.map(([key])=>[key,$('interior-'+key).valueAsNumber])),ceiling:$('interior-ceiling').checked});

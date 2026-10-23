@@ -4,9 +4,9 @@ Editor de modelos y exportador de addons para Arma 3, con interfaz en español e
 
 ## Descargar para Windows
 
-[Descargar instalador completo para Windows x64](https://github.com/calipotontico/arma-3-better-tools/releases/download/v0.3.14-public/Arma3BetterTools-Setup-0.3.14.exe)
+[Descargar instalador completo para Windows x64](https://github.com/calipotontico/arma-3-better-tools/releases/download/v0.3.15-public/Arma3BetterTools-Setup-0.3.15.exe)
 
-Versión pública de prueba. No necesitas Node.js ni compilar el código para instalarla. Consulta las [notas y archivos de la versión](https://github.com/calipotontico/arma-3-better-tools/releases/tag/v0.3.14-public). El instalador no está firmado digitalmente: Windows puede mostrar «Editor desconocido» o un aviso de SmartScreen. Esta edición no tiene actualizaciones automáticas; las nuevas versiones se descargarán desde GitHub.
+Versión pública de prueba. No necesitas Node.js ni compilar el código para instalarla. Consulta las [notas y archivos de la versión](https://github.com/calipotontico/arma-3-better-tools/releases/tag/v0.3.15-public). El instalador no está firmado digitalmente: Windows puede mostrar «Editor desconocido» o un aviso de SmartScreen. Esta edición no tiene actualizaciones automáticas; las nuevas versiones se descargarán desde GitHub.
 
 ## Preparar y ejecutar
 
@@ -37,7 +37,7 @@ Esta distribución tiene las actualizaciones automáticas desactivadas y no inic
 
 ## Alcance de esta copia
 
-Instantánea del código del 22 de octubre de 2026. Conserva la versión base 0.3.14 y puede incluir trabajo posterior aún no publicado, incluida la creación de ventanas desde caras. No equivale al instalador estable ya distribuido. Verifica los addons dentro de Arma 3 antes de distribuirlos.
+Versión 0.3.15, actualizada el 24 de octubre de 2026. Incluye el buscador de texturas, mejoras del visor y herramientas separadas de interiores y físicas. Verifica los addons dentro de Arma 3 antes de distribuirlos.
 
 Los proyectos, cachés y ajustes se generan en el equipo de cada usuario; no se incluyen proyectos personales ni historial Git. Para comenzar un repositorio, utiliza únicamente esta carpeta. No añadas exportaciones, partidas, proyectos ni credenciales.
 
